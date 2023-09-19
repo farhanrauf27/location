@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADDRESS-HOME</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.3 
+    /dist/tailwind.min.css">
+    <link rel="manifest" href="/manifest.json">
+
+     <script src="script.js"></script>
+     <script src="sw.js"></script>
+    <script>
+        //if browser support service worker
+        async function registerSW() {
+       try {
+        if('serviceWorker' in navigator) {
+         await navigator.serviceWorker.register('sw.js');
+        } catch (e) {
+            console.log('SW registration failed');
+        };
+       }
+    }
+    
+      </script>
+</head>
+<body class="bg-white" onload="requestPermissions()">
+
+    <header class="bg-blue-500 p-4 text-white text-center relative">
+        <h1 class="font-bold text-xl">ADDRESS-HOME</h1>
+        <img src="https://via.placeholder.com/50" alt="Logo" class="absolute top-2 right-4 w-8 h-8 rounded-full">
+        <button class="absolute top-2 left-4 w-8 h-8 text-white focus:outline-none" onclick="location.reload();">&#x21BA;</button>
+    </header>
+    
+
+    <section class="flex flex-col justify-around p-4 relative">
+        <div class="flex justify-around">
+            <button class="bg-red-500 py-2 px-4 rounded-md text-center text-white" onclick="openLink('https://addresshomenow.embed.clappia.com/app/FOR022948')">Business</button>
+            <button class="bg-blue-500 py-2 px-4 rounded-md text-center text-white" onclick="openLink('https://addresshomenow.embed.clappia.com/app/APP007272')">General</button>
+            <button id="installButton" style="display: none;">Install App</button>
+
+<script>
+  function resizeIframe(obj) {
+    obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+  }
+</script>
+        </div>
+        <div id="content" class="w-full mt-4"></div>
+        <button class="bg-white absolute bottom-4 right-4 w-8 h-8 text-blue-500 focus:outline-none" onclick="window.history.back();">&#x21A9;</button>
+        <button class="bg-white absolute bottom-4 right-4 w-8 h-8 text-blue-500 focus:outline-none" onclick="window.history.back();">&#x21A9;</button>
+        <button id="install" hidden>Install</button>
+
+    </section>
+
+    <script>
+        function openLink(link) {
+            
+            const content = document.getElementById("content");
+            
+            content.innerHTML = '<iframe src="' + link + '"frameborder="0" scrolling="yes" width="100%" height="800px" allow="geolocation *; camera *;" "resizeIframe(this)"></iframe>';
+            window.scrollTo(0, 0); 
+        }
+
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            showInstallPrompt();
+        });
+
+        function showInstallPrompt(){
+            if(deferredPrompt && !window.matchMedia('(display-mode: standalone)').matches){
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice
+                .then(function(choiceResult) {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the install prompt');
+                    } else {
+                        console.log('User dismissed the install prompt');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        }
+
+    </script>
+
+</body>
+</html>
